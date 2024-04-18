@@ -1,0 +1,41 @@
+{
+  "name": "cspell-junit-reporter",
+  "version": "0.0.1",
+  "description": "CSpell reporter with Junit XML output",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "tsc --build --clean",
+    "test": "jest --coverage",
+    "format": "prettier . --write"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nncdevel-io/cspell-junit-reporter.git"
+  },
+  "keywords": [
+    "cspell",
+    "junit"
+  ],
+  "author": "nnc-o-ishikawa",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nncdevel-io/cspell-junit-reporter/issues"
+  },
+  "homepage": "https://github.com/nncdevel-io/cspell-junit-reporter#readme",
+  "dependencies": {
+    "@cspell/cspell-types": "^8.7.0",
+    "@types/junit-report-builder": "^3.0.2",
+    "@types/node": "^20.12.7",
+    "junit-report-builder": "^3.2.1"
+  },
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "@tsconfig/node18": "^18.2.4",
+    "jest": "^29.7.0",
+    "prettier": "3.2.5",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.4.5"
+  }
+}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="2" failures="2" errors="0" skipped="0">
+  <testsuite name="Forbidden word dummy-text" tests="2" failures="2" errors="0" skipped="0">
+    <testcase classname="CSpell.ForbiddenWord.dummy-text" name="Forbidden word &quot;dummy-text&quot; at &quot;dummy-input&quot; line:11" file="dummy-input#L11">
+      <failure/>
+    </testcase>
+    <testcase classname="CSpell.ForbiddenWord.dummy-text" name="Forbidden word &quot;dummy-text&quot; at &quot;&quot; line:13" file="#L13">
+      <failure/>
+    </testcase>
+  </testsuite>
+</testsuites>
