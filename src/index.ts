@@ -1,6 +1,6 @@
 import { CSpellReporterModule, Issue } from '@cspell/cspell-types';
 
-import reportBuilder from 'junit-report-builder';
+import reportBuilder, { JUnitReportBuilder, TestSuite } from 'junit-report-builder';
 import path from 'path';
 import process from 'process';
 
@@ -15,46 +15,48 @@ export type GroupedIssues = {
 export const DEFAULT_OUTPUT = 'cspell-junit-test-report.xml';
 
 const Module: CSpellReporterModule = {
-  getReporter: (settings: ReporterSetting | unknown, config) => {
-    const builder = reportBuilder.newBuilder();
+  getReporter: (settings: ReporterSetting | unknown) => {
+    const builder: JUnitReportBuilder = reportBuilder.newBuilder();
 
-    const issues: GroupedIssues = {};
+    const addIssueByText = (issues : GroupedIssues, key:string, issue :Issue): GroupedIssues =>  {
+      return { ...issues, [key]: issues[key] ? [...issues[key], issue] : [issue] };
+    }
+
+    const buildTestSuite = (issues: Issue[], text: string) => {
+      const suite = builder.testSuite().name(`Forbidden word ${text}`);
+      issues.forEach((issue) => createTestCase(suite, issue));
+    };
+
+    const createTestCase = (suite: TestSuite, issue: Issue) => {
+      const { text, row, uri } = issue;
+      const absolutePath = (uri || '').replace(/^file:\/\//, '');
+      const file = path.relative(process.cwd(), absolutePath);
+      suite
+        .testCase()
+        .className(`CSpell.ForbiddenWord.${text}`)
+        .name(`Forbidden word "${text}" at "${file}" line:${row}`)
+        .file(`${file}#L${row}`)
+        .failure();
+    };
+
+    let issues: GroupedIssues = {};
+
     return {
-      issue: (issue) => {
-        const { text } = issue;
 
-        if (issues[text]) {
-          issues[text] = [...issues[text], issue];
-        } else {
-          issues[text] = [issue];
-        }
+      issue: (issue: Issue) => {
+        const { text } = issue;
+        issues = addIssueByText(issues, text, issue);
       },
 
       result: () => {
         const output = (settings as ReporterSetting).outFile || DEFAULT_OUTPUT;
         console.log(`output xml to ${output}`);
-        Object.keys(issues).forEach((text) => {
-          const suite = builder.testSuite().name(`Forbidden word ${text}`);
-          issues[text].forEach((issue) => {
-            const { row, uri } = issue;
-            const absolutePath = (uri || '').replace(/^file:\/\//, '');
-            const file = path.relative(process.cwd(), absolutePath);
-
-            suite
-              .testCase()
-              .className(`CSpell.ForbiddenWord.${text}`)
-              .name(`Forbidden word "${text}" at "${file}" line:${row}`)
-              .file(`${file}#L${row}`)
-              .failure();
-          });
-        });
-
-
+        Object.keys(issues).forEach((text) => buildTestSuite(issues[text], text));
 
         builder.writeTo(output);
-      },
+      }
     };
-  },
+  }
 };
 
 export const getReporter = Module.getReporter;
