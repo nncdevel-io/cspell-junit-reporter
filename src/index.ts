@@ -1,6 +1,9 @@
 import { CSpellReporterModule, Issue } from '@cspell/cspell-types';
 
-import reportBuilder, { JUnitReportBuilder, TestSuite } from 'junit-report-builder';
+import reportBuilder, {
+  JUnitReportBuilder,
+  TestSuite,
+} from 'junit-report-builder';
 import path from 'path';
 import process from 'process';
 
@@ -18,9 +21,16 @@ const Module: CSpellReporterModule = {
   getReporter: (settings: ReporterSetting | unknown) => {
     const builder: JUnitReportBuilder = reportBuilder.newBuilder();
 
-    const addIssueByText = (issues : GroupedIssues, key:string, issue :Issue): GroupedIssues =>  {
-      return { ...issues, [key]: issues[key] ? [...issues[key], issue] : [issue] };
-    }
+    const addIssueByText = (
+      issues: GroupedIssues,
+      key: string,
+      issue: Issue,
+    ): GroupedIssues => {
+      return {
+        ...issues,
+        [key]: issues[key] ? [...issues[key], issue] : [issue],
+      };
+    };
 
     const buildTestSuite = (issues: Issue[], text: string) => {
       const suite = builder.testSuite().name(`Forbidden word ${text}`);
@@ -52,12 +62,14 @@ const Module: CSpellReporterModule = {
       result: () => {
         const output = (settings as ReporterSetting).outFile || DEFAULT_OUTPUT;
         console.log(`output xml to ${output}`);
-        Object.keys(issues).forEach((text) => buildTestSuite(issues[text], text));
+        Object.keys(issues).forEach((text) => {
+          buildTestSuite(issues[text], text);
+        });
 
         builder.writeTo(output);
-      }
+      },
     };
-  }
+  },
 };
 
 export const getReporter = Module.getReporter;
