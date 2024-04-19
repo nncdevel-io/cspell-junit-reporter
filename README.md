@@ -8,7 +8,7 @@ Add this to cSpell.json:
 
 FIXME npm repository org.
 
-```json
+```
 reporters: [
     ["@example/cspell-junit-reporter", { "outFile": "out.xml" }]
 ]
