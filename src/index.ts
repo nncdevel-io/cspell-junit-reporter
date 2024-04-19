@@ -28,21 +28,22 @@ const Module: CSpellReporterModule = {
     };
 
     const createTestCase = (suite: TestSuite, issue: Issue) => {
-      const { text, row, uri } = issue;
+      const { text, row, col, context, uri } = issue;
       const absolutePath = (uri || '').replace(/^file:\/\//, '');
       const file = path.relative(process.cwd(), absolutePath);
+      const message = `${context.text}\n ${' '.repeat(col - 2)}${'^'.repeat(text.length)}`;
+
       suite
         .testCase()
         .className(`CSpell.ForbiddenWord.${text}`)
         .name(`Forbidden word "${text}" at "${file}" line:${row}`)
         .file(`${file}#L${row}`)
-        .failure();
+        .failure(message);
     };
 
     let issues: GroupedIssues = {};
 
     return {
-
       issue: (issue: Issue) => {
         const { text } = issue;
         issues = addIssueByText(issues, text, issue);
