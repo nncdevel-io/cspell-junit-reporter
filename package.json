@@ -37,5 +37,12 @@
     "prettier": "3.2.5",
     "ts-jest": "^29.1.2",
     "typescript": "^5.4.5"
-  }
+  },
+  "files": [
+    "dist",
+    "!**test.{js,ts}",
+    "!**test.{js,ts}.map",
+    "!**test.d.{js,ts}",
+    "!**test.d.{js,ts}.map"
+  ]
 }
