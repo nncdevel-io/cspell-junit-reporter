@@ -1,5 +1,5 @@
 {
-  "name": "cspell-junit-reporter",
+  "name": "@nncdevel-io/cspell-junit-reporter",
   "version": "0.0.1",
   "description": "CSpell reporter with Junit XML output",
   "main": "dist/index.js",
