@@ -16,9 +16,9 @@ in yaml format:
 
 ```yaml
 reporters:
+-
   - "@nncdevel-io/cspell-junit-reporter"
-  -
-    - outFile: out.xml
+  - outFile: out.xml
 ```
 
 ## Output file format
