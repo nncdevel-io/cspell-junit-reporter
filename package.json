@@ -44,5 +44,8 @@
     "!**test.{js,ts}.map",
     "!**test.d.{js,ts}",
     "!**test.d.{js,ts}.map"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }
