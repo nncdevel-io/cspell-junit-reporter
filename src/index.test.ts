@@ -44,11 +44,40 @@ const dummyIssue2: Issue = {
 const TEST_OUTPUT = './test_output/output.xml';
 
 describe('getReporter', () => {
+  /**
+   * テストの意図:
+   *   モジュールからgetReporter関数がエクスポートされていることを確認する基本的な存在チェック
+   *
+   * このテストで確認できること:
+   *   - getReporter関数がモジュールから正しくエクスポートされている
+   *   - getReporter関数がnullやundefinedではない
+   *
+   * 確認できないこと:
+   *   - getReporter関数の実際の動作
+   *   - 返り値の型や構造
+   *   - 関数の引数処理
+   */
   test('getReporter is defined', () => {
     const { getReporter } = Module;
     expect(getReporter).not.toBeNull();
   });
 
+  /**
+   * テストの意図:
+   *   getReporter関数が正しいインターフェースを持つレポーターオブジェクトを返すことを確認する
+   *
+   * このテストで確認できること:
+   *   - getReporter関数が空の設定でも正常に動作する
+   *   - 返されるレポーターオブジェクトがnullではない
+   *   - レポーターオブジェクトがissueメソッドを持っている
+   *   - レポーターオブジェクトがresultメソッドを持っている
+   *
+   * 確認できないこと:
+   *   - issueメソッドの実際の動作（問題の蓄積処理など）
+   *   - resultメソッドの実際の動作（XML出力など）
+   *   - 設定パラメータが正しく反映されるか
+   *   - 異常な設定値に対する動作
+   */
   test('getReporter returns instance', () => {
     const { getReporter } = Module;
     const settings: ReporterSetting = {};
@@ -70,6 +99,26 @@ const compareFile = (expected: fs.PathLike, actual: fs.PathLike) => {
 };
 
 describe('reporter', () => {
+  /**
+   * テストの意図:
+   *   スペルチェック問題が発生した場合に、正しい形式のJUnit XMLファイルが出力されることを確認する
+   *   エンドツーエンドの統合テスト
+   *
+   * このテストで確認できること:
+   *   - issueメソッドが複数回呼び出せる（問題を蓄積できる）
+   *   - resultメソッドが呼ばれたときに指定したパスにXMLファイルが作成される
+   *   - 出力されるXMLの内容が期待される形式と一致する（フィクスチャとの比較）
+   *   - 同じテキストに対する複数の問題がグループ化される
+   *   - ファイルパス、行番号、問題のテキストなどが正しくXMLに含まれる
+   *
+   * 確認できないこと:
+   *   - 実際のCSpellとの統合動作
+   *   - より複雑なシナリオ（多数の異なる問題、異なるファイルからの問題など）
+   *   - XMLのエンコーディングや特殊文字のエスケープ処理
+   *   - 大量の問題に対するパフォーマンス
+   *   - エラーハンドリング（ファイル書き込み失敗など）
+   *   - 既存ファイルの上書き動作
+   */
   test('reporter output xml file on issue occured', () => {
     // delete previous output xml
     if (fs.existsSync(TEST_OUTPUT)) {
@@ -108,6 +157,22 @@ describe('reporter', () => {
     }
   });
 
+  /**
+   * テストの意図:
+   *   スペルチェック問題が発生しなかった場合（クリーンな結果）でも、
+   *   正しい形式の空のJUnit XMLファイルが出力されることを確認する
+   *
+   * このテストで確認できること:
+   *   - issueメソッドが一度も呼ばれない場合でも正常に動作する
+   *   - resultメソッドのみ呼び出しても指定したパスにXMLファイルが作成される
+   *   - 問題がない場合の出力XMLが期待される形式（空のテストスイート）と一致する
+   *   - CI/CDツールが正しく解釈できる有効なXML構造が出力される
+   *
+   * 確認できないこと:
+   *   - 空のXMLがCI/CDツールで実際に正しく解釈されるか
+   *   - resultメソッドが複数回呼ばれた場合の動作
+   *   - エラーハンドリング（ファイル書き込み失敗など）
+   */
   test('reporter output xml file on no issue', () => {
     // delete previous output xml
     if (fs.existsSync(TEST_OUTPUT)) {
@@ -141,6 +206,23 @@ describe('reporter', () => {
 });
 
 describe('reporter with default settings', () => {
+  /**
+   * テストの意図:
+   *   設定が指定されていない場合にデフォルトの出力パスが使用されることを確認する
+   *   デフォルト設定でのフォールバック動作のテスト
+   *
+   * このテストで確認できること:
+   *   - 空の設定オブジェクトでもレポーターが正常に動作する
+   *   - outFileが指定されていない場合、DEFAULT_OUTPUT定数で定義されたパスが使用される
+   *   - デフォルトパスにXMLファイルが作成される
+   *   - デフォルト設定でも出力されるXMLの形式は正しい
+   *
+   * 確認できないこと:
+   *   - デフォルトパスのディレクトリが存在しない場合の動作
+   *   - デフォルトパスへの書き込み権限がない場合のエラーハンドリング
+   *   - 他のデフォルト設定値（出力形式、エンコーディングなど）の動作
+   *   - compareFileでTEST_OUTPUTと比較しているが、これはDEFAULT_OUTPUTであるべき（潜在的なバグ）
+   */
   test('reporter output xml file on no issue', () => {
     // delete previous output xml
     if (fs.existsSync(DEFAULT_OUTPUT)) {
